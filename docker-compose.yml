@@ -1,0 +1,46 @@
+version: "3.1"
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+
+    ports:
+      - 27017:27017
+    networks:
+      - shared-network
+    volumes:
+      - ./mongodb:/var/lib/mongodb/data
+
+  api:
+    container_name: docker-api
+    restart: unless-stopped
+    image: docker-api-prod:1.0.0
+    build:
+      context: docker-backend
+      target: production
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    networks:
+      - shared-network
+    depends_on:
+      - mongo
+
+  client:
+    container_name: docker-client
+    restart: unless-stopped
+    image: docker-client-prod:1.0.0
+    build:
+      context: docker-frontend
+      target: production
+      dockerfile: Dockerfile
+    ports:
+      - 5173:5173
+    networks:
+      - shared-network
+    depends_on:
+      - api
+
+networks:
+  shared-network:
