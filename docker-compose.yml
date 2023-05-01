@@ -1,46 +1,31 @@
-version: "3.1"
-
+version: "3"
 services:
-  mongo:
-    image: mongo
-    restart: always
-
+  react-app:
+    image: react-app
+    stdin_open: true
     ports:
-      - 27017:27017
+      - "5173:5173"
     networks:
-      - shared-network
-    volumes:
-      - ./mongodb:/var/lib/mongodb/data
-
-  api:
-    container_name: docker-api
-    restart: unless-stopped
-    image: docker-api-prod:1.0.0
-    build:
-      context: docker-backend
-      target: production
-      dockerfile: Dockerfile
+      - mern-app
+  api-server:
+    image: api-server
     ports:
-      - 5000:5000
+      - "5000:5000"
     networks:
-      - shared-network
+      - mern-app
     depends_on:
       - mongo
-
-  client:
-    container_name: docker-client
-    restart: unless-stopped
-    image: docker-client-prod:1.0.0
-    build:
-      context: docker-frontend
-      target: production
-      dockerfile: Dockerfile
+  mongo:
+    image: mongo:3.6.19-xenial
     ports:
-      - 5173:5173
+      - "27017:27017"
     networks:
-      - shared-network
-    depends_on:
-      - api
-
+      - mern-app
+    volumes:
+      - mongo-data:/data/db
 networks:
-  shared-network:
+  mern-app:
+    driver: bridge
+volumes:
+  mongo-data:
+    driver: local

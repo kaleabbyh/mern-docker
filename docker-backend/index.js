@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 try {
-  mongoose.connect("mongodb://localhost:27017/docker");
+  mongoose.connect("mongodb://mongo:27017/docker");
   console.log("mongodb is connected");
 } catch (error) {
   console.log(error);

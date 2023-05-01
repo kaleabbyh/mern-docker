@@ -1,17 +1,14 @@
-FROM node:18 as production
+FROM node:18
 
-
-ENV NODE-ENV=production
-
-
-WORKDIR /usr/api
+WORKDIR /usr/src/app
 
 COPY package.json .
 COPY package-lock.json .
 
 RUN npm install
+
 COPY . .
 
-RUN npm run build
+EXPOSE 5000
 
-CMD ["sh","-c","npm start"]
+CMD ["npm","start"]
